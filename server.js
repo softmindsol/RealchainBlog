@@ -2,7 +2,7 @@ import express from "express";
 import fetch from "node-fetch";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 
 function generateHTML(blog, customMetaTags = [], id) {
     console.log("🚀 ~ generateHTML ~ customMetaTags:", customMetaTags)
@@ -11,7 +11,7 @@ function generateHTML(blog, customMetaTags = [], id) {
       <meta name="description" content="${blog?.meta_description || ""}">
       <meta name="keywords" content="${blog?.meta_keywords || ""}">
     `;
-  
+
     if (Array.isArray(customMetaTags)) {
       customMetaTags.forEach((tag) => {
         if (tag.type === "property") {
@@ -21,7 +21,7 @@ function generateHTML(blog, customMetaTags = [], id) {
         }
       });
     }
-  
+
     return `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -36,7 +36,7 @@ function generateHTML(blog, customMetaTags = [], id) {
       </body>
     </html>`;
   }
-  
+
 
 app.get("/blogs/:id", async (req, res) => {
   try {
