@@ -14,20 +14,18 @@ function generateHTML(blog, customMetaTags = [], id) {
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="${blog?.meta_title || blog?.title || "Blog"}">
     <meta property="og:description" content="${blog?.meta_description || ""}">
-    <meta property="og:image" content="${blog?.image || "https://example.com/default-image.jpg"}">
-    <meta property="og:image:alt" content="${blog?.image_alt || "Default image description"}">
+    <meta property="og:image" content="${`https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg"}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="${blog?.url || "https://example.com"}">
-    <meta property="og:site_name" content="${blog?.site_name || "Your Site Name"}">
+    <meta property="og:url" content="https://develop.realchaininvestments.com/blogs/${id}">
+    <meta property="og:site_name" content="RealChain Investments">
   
     <!-- Twitter/X Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${blog?.meta_title || blog?.title || "Blog"}">
     <meta name="twitter:description" content="${blog?.meta_description || ""}">
-    <meta name="twitter:image" content="${blog?.image || "https://example.com/default-image.jpg"}">
-    <meta name="twitter:image:alt" content="${blog?.image_alt || "Default image description"}">
+    <meta name="twitter:image" content="${`https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg"}">
   `;
   
   // List of existing meta tag keys to prevent duplicates
@@ -36,7 +34,6 @@ function generateHTML(blog, customMetaTags = [], id) {
       "og:title",
       "og:description",
       "og:image",
-      "og:image:alt",
       "og:image:width",
       "og:image:height",
       "og:type",
@@ -50,7 +47,6 @@ function generateHTML(blog, customMetaTags = [], id) {
       "twitter:title",
       "twitter:description",
       "twitter:image",
-      "twitter:image:alt",
     ],
   };
   
