@@ -5,69 +5,58 @@ const app = express();
 const PORT = process.env.PORT || 6000;
 
 function generateHTML(blog, customMetaTags = [], id) {
-    console.log("🚀 ~ generateHTML ~ customMetaTags:", customMetaTags)
-    let tags = `
-    <title>${blog?.meta_title || blog?.title || "Blog"}</title>
-    <meta name="description" content="${blog?.meta_description || ""}">
-    <meta name="keywords" content="${blog?.meta_keywords || ""}">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="${blog?.meta_title || blog?.title || "Blog"}">
-    <meta property="og:description" content="${blog?.meta_description || ""}">
-    <meta property="og:image" content="${`https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg"}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://develop.realchaininvestments.com/blogs/${id}">
-    <meta property="og:site_name" content="RealChain Investments">
+    console.log("🚀 ~ generateHTML ~ customMetaTags:", customMetaTags);
   
-    <!-- Twitter/X Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${blog?.meta_title || blog?.title || "Blog"}">
-    <meta name="twitter:description" content="${blog?.meta_description || ""}">
-    <meta name="twitter:image" content="${`https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg"}">
-  `;
+    // Default tags map
+    const tags = {
+      title: blog?.meta_title || blog?.title || "Blog",
+      description: blog?.meta_description || "",
+      keywords: blog?.meta_keywords || "",
+      "og:title": blog?.meta_title || blog?.title || "Blog",
+      "og:description": blog?.meta_description || "",
+      "og:image": `https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg",
+      "og:image:width": "1200",
+      "og:image:height": "630",
+      "og:type": "article",
+      "og:url": `https://develop.realchaininvestments.com/blogs/${id}`,
+      "og:site_name": "RealChain Investments",
+      "twitter:card": "summary_large_image",
+      "twitter:title": blog?.meta_title || blog?.title || "Blog",
+      "twitter:description": blog?.meta_description || "",
+      "twitter:image": `https://api.realchaininvestments.com/blogs/${blog?.image}` || "https://example.com/default-image.jpg",
+    };
   
-  // List of existing meta tag keys to prevent duplicates
-  const existingKeys = {
-    property: [
-      "og:title",
-      "og:description",
-      "og:image",
-      "og:image:width",
-      "og:image:height",
-      "og:type",
-      "og:url",
-      "og:site_name",
-    ],
-    name: [
-      "description",
-      "keywords",
-      "twitter:card",
-      "twitter:title",
-      "twitter:description",
-      "twitter:image",
-    ],
-  };
+    // Apply custom tags (override defaults if keys match)
+    if (Array.isArray(customMetaTags)) {
+      customMetaTags.forEach((tag) => {
+        if (tag.type === "property" || tag.type === "name") {
+          tags[tag.key] = tag.content || "";
+        }
+      });
+    }
   
-  // Add custom meta tags, avoiding duplicates
-  if (Array.isArray(customMetaTags)) {
-    customMetaTags.forEach((tag) => {
-      // Check if the tag's key already exists in the corresponding type
-      if (tag.type === "property" && !existingKeys.property.includes(tag.key)) {
-        tags += `<meta property="${tag.key}" content="${tag.content || ""}">`;
-      } else if (tag.type === "name" && !existingKeys.name.includes(tag.key)) {
-        tags += `<meta name="${tag.key}" content="${tag.content || ""}">`;
+    // Convert object to HTML tags
+    let metaTags = `
+      <title>${tags.title}</title>
+      <meta name="description" content="${tags.description}">
+      <meta name="keywords" content="${tags.keywords}">
+    `;
+  
+    Object.entries(tags).forEach(([key, value]) => {
+      if (key === "title" || key === "description" || key === "keywords") return; // already added
+      if (key.startsWith("og:")) {
+        metaTags += `\n<meta property="${key}" content="${value}">`;
+      } else if (key.startsWith("twitter:")) {
+        metaTags += `\n<meta name="${key}" content="${value}">`;
       }
     });
-  }
-
+  
     return `<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        ${tags}
+        ${metaTags}
       </head>
       <body>
         <script>
@@ -76,6 +65,7 @@ function generateHTML(blog, customMetaTags = [], id) {
       </body>
     </html>`;
   }
+  
 
 
 app.get("/blogs/:id", async (req, res) => {
