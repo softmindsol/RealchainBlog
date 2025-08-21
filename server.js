@@ -92,7 +92,7 @@ app.get("/blogs/:id", async (req, res) => {
 
 // fallback for all other routes
 app.get("*", (req, res) => {
-  res.redirect("https://develop.realchaininvestments.com");
+  res.redirect("https://realchaininvest.com");
 });
 
 app.listen(PORT, () => {
