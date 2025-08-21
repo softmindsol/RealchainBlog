@@ -60,7 +60,7 @@ function generateHTML(blog, customMetaTags = [], id) {
       </head>
       <body>
         <script>
-          window.location.href = "https://develop.realchaininvestments.com/blogs/${id}";
+          window.location.href = "https://realchaininvest.com/blogs/${id}";
         </script>
       </body>
     </html>`;
